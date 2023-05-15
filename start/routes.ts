@@ -21,6 +21,7 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 //main route
+Route.get('/', 'PagesController.index')
 Route.get('/home', 'PagesController.home')
 
 //peminjaman barang
@@ -37,6 +38,14 @@ Route.get('/riwayat-peminjaman', 'PagesController.riwayatPeminjaman')
 Route.get('/detail-riwayat', 'PagesController.detailRiwayat')
 
 //account
+Route.get('/akun', 'PagesController.akun')
 Route.get('/login', 'PagesController.login')
 Route.get('/signup', 'PagesController.signUp')
 Route.get('/forgot-password', 'PagesController.forgotPassword')
+
+//Category
+Route.post('/categories/store', 'CategoriesController.store').as('categories.store')
+
+//tool
+Route.get('/add-tool', 'PagesController.addTool')
+Route.post('/tools/store', 'ToolsController.store').as('tools.store')

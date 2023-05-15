@@ -1,12 +1,9 @@
 import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, belongsTo, column, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
-import {
-  attachment,
-  AttachmentContract
-} from '@ioc:Adonis/Addons/AttachmentLite'
 import User from './User'
 import Category from './Category'
 import Checkout from './Checkout'
+import { attachment, AttachmentContract } from '@ioc:Adonis/Addons/AttachmentLite'
 
 export default class Tool extends BaseModel {
     @column()
@@ -34,7 +31,7 @@ export default class Tool extends BaseModel {
     public available: number
     
     @column()
-    publicstatus: string
+    public status: string
     
     @column.dateTime({ autoCreate: true })
     public createdAt: DateTime

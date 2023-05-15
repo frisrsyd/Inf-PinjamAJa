@@ -2,6 +2,11 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
 export default class PagesController {
 
+    public async index({ view }: HttpContextContract) {
+        //auto direct to home route
+        return view.render('page/home')
+    }
+
     public async home({ view }: HttpContextContract) {
         return view.render('page/home')
     }
@@ -44,6 +49,14 @@ export default class PagesController {
 
     public async forgotPassword({ view }: HttpContextContract) {
         return view.render('page/account/forgot-password')
+    }
+
+    public async akun({ view }: HttpContextContract) {
+        return view.render('page/account/akun')
+    }
+
+    public async addTool({ view }: HttpContextContract) {
+        return view.render('page/tool/add-tool')
     }
     
 }
