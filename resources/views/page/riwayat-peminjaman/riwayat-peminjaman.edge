@@ -1,0 +1,28 @@
+@layout('layouts/main')
+@set('title', 'Riwayat')
+
+@section('body')
+<section>
+    <div class="container">
+        @search()
+        @end
+
+        @subtitle({
+            subtitle: 'Barang yang pernah dipinjam',
+        })
+        @end
+
+        @card.cardMedium({
+            nama_barang: 'Kamera',
+            label_1 : 'Jumlah Pinjam:',
+            label_2 : 'Tanggal Kembali:',
+            text_1: 1,
+            text_2: '06/03/2023',
+            text_button: 'Details',
+            href: '/detail-riwayat',
+            image : 'http://localhost:8080/assets/images/camera.98c54927.jpg'
+        })
+        @end
+    </div>
+</section>
+@endsection

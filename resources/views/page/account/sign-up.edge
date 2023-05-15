@@ -1,0 +1,92 @@
+@layout('layouts/account')
+@set('title', 'Daftar Akun')
+@section('style')
+<style>
+    html,
+    body {
+        background-size: cover;
+        background-position: center;
+    }
+
+    a {
+        color: #f6ee27;
+        text-decoration: none;
+    }
+
+    a:hover {
+        color: #f6ee27;
+        text-decoration: underline;
+    }
+</style>
+@endsection
+@section('body')
+<section>
+    <div class="container">
+        <div class="row justify-content-between ">
+            <div class="col-sm-5">
+                <div class="row">
+                    @form.input({
+                    name: 'Nama:',
+                    id :'name',
+                    type: 'text',
+                    placeholder: 'Masukkan Nama',
+                    })
+                    @end
+                </div>
+                <div class="row">
+                    @form.input({
+                    name: 'Email:',
+                    id :'email',
+                    type: 'text',
+                    placeholder: 'Masukkan Email',
+                    })
+                    @end
+                </div>
+                <div class="row">
+                    @form.input({
+                    name: 'NIM:',
+                    id :'nim',
+                    type: 'text',
+                    placeholder: 'Masukkan NIM',
+                    })
+                    @end
+                </div>
+                <div class="row">
+                    @form.input({
+                    name: 'Password:',
+                    id :'password',
+                    type: 'text',
+                    placeholder: 'Masukkan Password',
+                    })
+                    @end
+                </div>
+                <div class="row">
+                    @form.input({
+                    name: 'Konfirmasi Password:',
+                    id :'password-confirm',
+                    type: 'text',
+                    placeholder: 'Konfirmasi Password',
+                    })
+                    @end
+                </div>
+                <div class="row ps-3 pe-3">
+                    @button({
+                    type : 'submit',
+                    class_button : 'btn btn-primary',
+                    text : 'Daftar Akun',
+                    href : '/login',
+                    id : 'btn-login'
+                    })
+                    @end
+                </div>
+                <div class="row text-center mt-2">
+                    <p>Sudah punya akun? <a href="/login">Masuk Sekarang</a></p>
+                </div>
+            </div>
+            <div class="col-sm justify-content-center d-flex align-items-center">
+                <h3 class="text-warning">Selamat Datang di INF PinjamAja</h3>
+            </div>
+        </div>
+    </div>
+</section>
+@endsection

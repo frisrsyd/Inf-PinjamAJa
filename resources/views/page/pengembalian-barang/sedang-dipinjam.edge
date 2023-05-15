@@ -1,0 +1,32 @@
+@layout('layouts/main')
+@set('title', 'Sedang Dipinjam')
+
+@section('body')
+<section>
+    <div class="container">
+        <div class="row">
+            @search()
+            @end
+        </div>
+        <div class="row">
+            @subtitle({
+                subtitle: 'Barang yang sedang dipinjam'
+            })
+            @end
+        </div>
+
+        @card.cardLarge({
+            nama_barang: 'Kamera Canon EOS 800D',
+            label_1: 'Jumlah Pinjam:',
+            label_2: 'Status:',
+            text_1: '1',
+            text_2: 'Belum Diambil',
+            class_text_2: 'text-danger',
+            text_button: 'Details',
+            href: '/detail-peminjaman',
+            image : 'http://localhost:8080/assets/images/camera.98c54927.jpg'
+        })
+        @end
+    </div>
+</section>
+@endsection

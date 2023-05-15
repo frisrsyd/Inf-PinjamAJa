@@ -1,0 +1,31 @@
+@layout('layouts/main')
+@set('title', 'Detail Barang')
+
+@section('body')
+<section>
+    <div class="container">
+        <div class="row">
+            @search()
+            @end
+        </div>
+        <div class="row">
+            @subtitle({
+                subtitle: 'Barang yang tersedia',
+            })
+            @end
+        </div>
+        @card.cardLarge({
+            nama_barang: 'Canon EOS 800D',
+            label_1: 'Jumlah Barang:',
+            label_2: 'Jumlah Tersedia:',
+            text_1: '2',
+            text_2: '1',
+            text_button: 'Pinjam',
+            href: '/data-peminjaman',
+            image : 'http://localhost:8080/assets/images/camera.98c54927.jpg'
+        })
+        @end
+
+    </div>
+</section>
+@endsection

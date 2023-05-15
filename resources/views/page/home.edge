@@ -1,0 +1,28 @@
+@layout('layouts/main')
+@set('title', 'Home page')
+
+@section('body')
+<section>
+    <div class="container">
+        @search()
+        @end
+
+        @subtitle({
+            subtitle: 'Barang yang tersedia',
+        })
+        @end
+
+        @card.card({
+            nama_barang: 'Kamera',
+            label_1 : 'Jumlah Barang:',
+            label_2 : 'Jumlah Tersedia:',
+            text_1: 3,
+            text_2: 3,
+            text_button: 'Details',
+            href: '/detail-barang',
+            image : 'http://localhost:8080/assets/images/camera.98c54927.jpg'
+        })
+        @end
+    </div>
+</section>
+@endsection
