@@ -8,46 +8,93 @@ export default class ToolsController {
 
   public async create({}: HttpContextContract) {}
 
-  public async store({request}: HttpContextContract) {
+  public async store({request, response, session, auth}: HttpContextContract) {
     const tool = new Tool()
-    //store data from request in add-tool page
-    const data = request.only(['toolName', 'category', 'stock', 'available', 'status'])
+    const data = request.body()
 
     const toolName = data.toolName
     const categoryName:string = data.category
-    const categorySlug = categoryName.toLowerCase().replace(/ /g, '-')
-    const slug = data.toolName = data.toolName.toLowerCase().replace(/ /g, '-')
+    let categorySlug
+    let slug
+    if(toolName != null && categoryName != null){
+      categorySlug = categoryName.toLowerCase().replace(/ /g, '-')
+      slug = data.toolName = data.toolName.toLowerCase().replace(/ /g, '-')
+    }
     let image = request.file('image')!
-    
+    let status
+
     const stock = data.stock = parseInt(data.stock)
     const available = stock
-    let status = data.status
-    if (available == 0) {
-      status = 'Tidak tersedia'
-    } else {
-      status = 'Tersedia'
-    }
+    
     
     await Category.firstOrCreate({name: categoryName}, {slug: categorySlug})
     const getCategory = await Category.findByOrFail('slug', categorySlug)
     const category_id = getCategory.id
 
+    const getImage = await Tool.findBy('slug', slug)
+    if (getImage) {
+      tool.stock = getImage.stock + stock
+      tool.available = getImage.available + stock
+      status = getImage.status
+      if (tool.available == 0) {
+        status = 'Tidak tersedia'
+      }
+      else {
+        status = 'Tersedia'
+      }
+    }else{
+      tool.stock = stock
+      tool.available = available
+      status = tool.status
+      if (available == 0) {
+        status = 'Tidak tersedia'
+      } else {
+        status = 'Tersedia'
+      }
+    }
+    
     tool.image = Attachment.fromFile(image)
-    tool.name = toolName
-    tool.slug = slug
-    tool.stock = stock
-    tool.available = available
-    tool.status = status
-    tool.category_id = category_id
-    await tool.save()
-    // return tool
+    // tool.name = toolName
+    // tool.slug = slug
+    // tool.stock = stock
+    // tool.available = available
+    // tool.status = status
+    // tool.category_id = category_id
+    
+    // updateOrCreate data from slug in tools table
+
+    
+
+    const tool_ref = await Tool.updateOrCreate({slug: slug}, {
+      name: toolName,
+      image: tool.image, 
+      userId: auth.user?.id,
+      slug: slug,
+      categoryId: category_id, 
+      stock: tool.stock, 
+      available: tool.available, 
+      status: status})
+    // await tool.save()
+    
+    if (tool_ref) {
+      session.flash('status', 'Alat berhasil ditambahkan')
+    }
+    else {
+      session.flash('status', 'Alat gagal ditambahkan')
+    }
+
+    return response.redirect().toRoute('/add-tool')
   }
 
   public async show({}: HttpContextContract) {}
 
   public async edit({}: HttpContextContract) {}
 
-  public async update({}: HttpContextContract) {}
+  public async update({params}: HttpContextContract) {
+    const tool = await Tool.findByOrFail('slug', params.slug)
+    const data = await tool.toJSON()
+    return data
+  }
 
   public async destroy({}: HttpContextContract) {}
 }

@@ -1,24 +1,25 @@
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, belongsTo, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, beforeSave, BelongsTo, belongsTo, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import Role from './Role'
 import Tool from './Tool'
 import Checkout from './Checkout'
+import Hash from '@ioc:Adonis/Core/Hash'
 
 export default class User extends BaseModel {
     @column({ isPrimary: true })
     public id: number
   
     @column()
-    public role_id: number
+    public roleId: number
   
     @column()
-    public nama: string
+    public name: string
   
     @column()
     public email: string
   
     @column()
-    public NPM: string
+    public npm: string
   
     @column()
     public password: string
@@ -40,4 +41,12 @@ export default class User extends BaseModel {
 
     @hasMany(() => Checkout)
     public checkouts: HasMany<typeof Checkout>
+
+    @beforeSave()
+    public static async hashPassword (user: User) {
+      if (user.$dirty.password) {
+        user.password = await Hash.make(user.password)
+      }
+    }
+  
 }

@@ -24,6 +24,9 @@ export default class Checkout extends BaseModel {
     
     @column.dateTime()
     public endDate : DateTime
+
+    @column()
+    public purpose : string
     
     @column.dateTime({ autoCreate: true })
     public createdAt: DateTime

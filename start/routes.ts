@@ -20,32 +20,53 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
-//main route
-Route.get('/', 'PagesController.index')
-Route.get('/home', 'PagesController.home')
+Route.get('dashboard', async ({ auth }) => {
+    await auth.use('web').authenticate()
+  
+    // ✅ Request authenticated
+    console.log(auth.user!)
+  })
+  
+Route.group(() => {
+    
+    //peminjaman barang
+    Route.get('/detail-barang/:category_id', 'PagesController.detailBarang')
+    Route.get('/data-peminjaman/:tool_id', 'PagesController.dataPeminjaman')
+    Route.get('/rekap-peminjaman/:checkout_id', 'PagesController.rekapPeminjaman').as('rekap-peminjaman')
+    Route.post('/checkouts/store/:tool_id', 'CheckoutsController.store').as('checkouts.store')
 
-//peminjaman barang
-Route.get('/detail-barang', 'PagesController.detailBarang')
-Route.get('/data-peminjaman', 'PagesController.dataPeminjaman')
-Route.get('/rekap-peminjaman', 'PagesController.rekapPeminjaman')
+    //pengembalian barang
+    Route.get('/sedang-dipinjam', 'PagesController.sedangDipinjam')
+    Route.get('/detail-peminjaman', 'PagesController.detailPeminjaman')
 
-//pengembalian barang
-Route.get('/sedang-dipinjam', 'PagesController.sedangDipinjam')
-Route.get('/detail-peminjaman', 'PagesController.detailPeminjaman')
+    //riwayat peminjaman
+    Route.get('/riwayat-peminjaman', 'PagesController.riwayatPeminjaman')
+    Route.get('/detail-riwayat', 'PagesController.detailRiwayat')
 
-//riwayat peminjaman
-Route.get('/riwayat-peminjaman', 'PagesController.riwayatPeminjaman')
-Route.get('/detail-riwayat', 'PagesController.detailRiwayat')
+    //Category
+    Route.post('/categories/store', 'CategoriesController.store').as('categories.store')
 
-//account
-Route.get('/akun', 'PagesController.akun')
+    //tool
+    Route.get('/add-tool', 'PagesController.addTool')
+    Route.post('/tools/store', 'ToolsController.store').as('tools.store')
+
+    //logout
+    Route.post('/logout', 'LoginController.logout').as('logout')
+
+    //main route
+    Route.get('/', 'PagesController.home')
+    Route.get('/home', 'PagesController.home')
+    
+    //account
+    Route.get('/akun', 'PagesController.akun')
+}).middleware('auth')
+
+
 Route.get('/login', 'PagesController.login')
 Route.get('/signup', 'PagesController.signUp')
 Route.get('/forgot-password', 'PagesController.forgotPassword')
+Route.post('/register/store', 'RegistersController.store').as('register.store')
+Route.post('/login', 'LoginController.login').as('login')
 
-//Category
-Route.post('/categories/store', 'CategoriesController.store').as('categories.store')
 
-//tool
-Route.get('/add-tool', 'PagesController.addTool')
-Route.post('/tools/store', 'ToolsController.store').as('tools.store')
+

@@ -10,10 +10,10 @@ export default class Tool extends BaseModel {
     public id: number
     
     @column()
-    public user_id: number
+    public userId: number
     
     @column()
-    public category_id: number
+    public categoryId: number
     
     @column()
     public name: string
@@ -21,7 +21,7 @@ export default class Tool extends BaseModel {
     @column()
     public slug: string
     
-    @attachment()
+    @attachment({ preComputeUrl: true })
     public image: AttachmentContract
     
     @column()

@@ -12,6 +12,7 @@ export default class extends BaseSchema {
       table.string('status').notNullable()
       table.timestamp('start_date', { useTz: true })
       table.timestamp('end_date', { useTz: true }).defaultTo(this.now())
+      table.string('purpose').notNullable()
       table.timestamp('created_at', { useTz: true }).defaultTo(this.now())
       table.timestamp('updated_at', { useTz: true }).defaultTo(this.now())
     })

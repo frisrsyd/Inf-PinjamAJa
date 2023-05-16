@@ -9,7 +9,7 @@ export default class extends BaseSchema {
       table.integer('user_id').unsigned().references('id').inTable('users')
       table.integer('category_id').unsigned().references('id').inTable('categories')
       table.string("name").notNullable()
-      table.string("slug").notNullable()
+      table.string("slug").notNullable().unique()
       table.json('image').notNullable()
       table.integer('stock').notNullable()
       table.integer('available').notNullable()

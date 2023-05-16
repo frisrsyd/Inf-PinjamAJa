@@ -7,8 +7,8 @@
         <div class="row">
             <div class="col-md-3">
                 <img class="image-profile" src="{{asset('assets/images/camera.jpg')}}" alt="profile-photo">
-                <div class="h2 mt-3">Nama Akun</div>
-                <div class="h5">email akun</div>
+                <div class="h2 mt-3">{{auth.user.name}}</div>
+                <div class="h5">{{auth.user.email}}</div>
             </div>
             <div class="col-md">
                 <div class="row text-center">
@@ -17,11 +17,13 @@
                             <p><i class="bi bi-bell me-2"></i>Notifications</p>
                         </a>
                     </div>
+                    @if(auth.user.roleId == 2 || auth.user.roleId == 3)
                     <div class="col-md-auto">
                         <a class="navigation-menu" href="">
                             <p><i class="bi bi-check2-all me-2"></i></i>Terima Peminjaman</p>
                         </a>
                     </div>
+                    @endif
                     <div class="col-md-auto">
                         <a class="navigation-menu text-success" href="">
                             <p><i class="bi bi-check2-circle me-2"></i></i>Barang yg Diterima</p>
@@ -32,19 +34,21 @@
                             <p><i class="bi bi-x-circle me-2"></i></i>Barang yg Ditolak</p>
                         </a>
                     </div>
-                    <div class="col-md text-end">
+                    @if(auth.user.roleId == 2 || auth.user.roleId == 3)
+                    <div class="col-md-auto ms-auto text-end">
                         <a class="navigation-menu text-primary" href="{{route('/add-tool')}}">
                             <p><i class="bi bi-pencil me-2"></i>Tambah Barang</p>
                         </a>
                     </div>
+                    @endif
                     <hr>
                 </div>
             </div>
         </div>
         <div class="row mt-3">
             <div class="col-md-3">
-                <p class="mt-0 mb-2"><i class="bi bi-person-circle me-2"></i>Role akun</p>
-                <p class="mt-0 mb-2"><i class="bi bi-building-fill me-2"></i>NPM akun</p>
+                <p class="mt-0 mb-2"><i class="bi bi-person-circle me-2"></i>{{users?.role.name}}</p>
+                <p class="mt-0 mb-2"><i class="bi bi-building-fill me-2"></i>{{auth.user.npm}}</p>
             </div>
         </div>
     </div>

@@ -38,3 +38,8 @@ input[type='number']::-webkit-outer-spin-button {
   padding: 1.5em;
   border-radius: 10px;
 }
+
+.logoutBtn {
+  border: none;
+  background: transparent;
+}

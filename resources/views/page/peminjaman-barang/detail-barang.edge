@@ -9,22 +9,37 @@
             @end
         </div>
         <div class="row">
+            {{-- if errror = true set subtitle barang tidak --}}
+            @if(error)
             @subtitle({
-                subtitle: 'Barang yang tersedia',
+            subtitle: error,
             })
             @end
+            @end
+
+            {{-- if errror = false set subtitle barang tersedia --}}
+            @if(!error)
+            @subtitle({
+            subtitle: 'Barang yang tersedia',
+            })
+            @end
+            @end
         </div>
-        @card.cardLarge({
-            nama_barang: 'Canon EOS 800D',
+        <div class="row">
+            @each(item in tools)
+            @card.cardMedium({
+            nama_barang: item.name,
             label_1: 'Jumlah Barang:',
             label_2: 'Jumlah Tersedia:',
-            text_1: '2',
-            text_2: '1',
+            text_1: item.stock,
+            text_2: item.available,
             text_button: 'Pinjam',
-            href: '/data-peminjaman',
-            image : 'http://localhost:8080/assets/images/camera.98c54927.jpg'
-        })
-        @end
+            href: '/data-peminjaman/' + item.id,
+            image : 'http://localhost:8080/assets/images' + item.image.url,
+            })
+            @end
+            @endeach
+        </div>
 
     </div>
 </section>

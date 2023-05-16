@@ -11,6 +11,7 @@
           <li class="nav-item">
             <a class="nav-link" href="{{route('/home')}}">Beranda</a>
           </li>
+          @if(auth.isLoggedIn)
           <li class="nav-item">
             <a class="nav-link" href="{{route('/sedang-dipinjam')}}">Sedang Dipinjam</a>
           </li>
@@ -21,8 +22,17 @@
             <a class="nav-link" href="{{route('/akun')}}">Akun</a>
           </li>
           <li class="nav-item">
+            <form action="{{route('logout')}}" method="POST">
+              {{ csrfField() }}
+              <button type="submit" class="nav-link logoutBtn">Logout</button>
+            </form>
+          </li>
+          @else
+          <li class="nav-item">
             <a class="nav-link" href="{{route('/login')}}">Login</a>
           </li>
+          @endif
+
         </ul>
       </div>
     </div>

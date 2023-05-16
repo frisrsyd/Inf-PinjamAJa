@@ -61,6 +61,10 @@ Encore.copyFiles({
   to: 'images/[path][name].[hash:8].[ext]',
 })
 Encore.copyFiles({
+  from: './tmp/uploads',
+  to: 'images/uploads/[path][name].[ext]',
+})
+Encore.copyFiles({
   from: './resources/js',
   to: 'js/[path][name].[hash:8].[ext]',
 })
