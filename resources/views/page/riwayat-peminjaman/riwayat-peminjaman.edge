@@ -7,22 +7,36 @@
         @search()
         @end
 
+        @if(error)
         @subtitle({
-            subtitle: 'Barang yang pernah dipinjam',
+        subtitle: error,
         })
         @end
+        @endif
 
-        @card.cardMedium({
-            nama_barang: 'Kamera',
+        {{-- if errror = false set subtitle barang tersedia --}}
+        @if(!error)
+        @subtitle({
+        subtitle: 'Barang yang sedang dipinjam',
+        })
+        @end
+        @endif
+
+        <div class="row">
+            @each(checkout in checkouts)
+            @card.cardMedium({
+            nama_barang: checkout?.tool.name,
             label_1 : 'Jumlah Pinjam:',
             label_2 : 'Tanggal Kembali:',
-            text_1: 1,
-            text_2: '06/03/2023',
+            text_1: checkout?.quantity,
+            text_2: endDate[checkout?.id - 1],
             text_button: 'Details',
             href: '/detail-riwayat',
-            image : 'http://localhost:8080/assets/images/camera.98c54927.jpg'
-        })
-        @end
+            image : 'http://localhost:8080/assets/images' + checkout?.tool.image.url
+            })
+            @end
+            @endeach
+        </div>
     </div>
 </section>
 @endsection

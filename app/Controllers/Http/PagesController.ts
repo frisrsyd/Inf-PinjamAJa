@@ -52,22 +52,92 @@ export default class PagesController {
         await checkout?.load('user')
         // change the format of the date
         let noPinjam = checkout?.createdAt.toFormat('dd/MM/yyyy')
-        noPinjam = checkout?.tool.name + '/' + noPinjam + '/' + checkout?.id
+        noPinjam = checkout?.tool.name.toUpperCase().replace(/ /g, '_') + '/' + noPinjam + '/' + checkout?.id
         const startDate = checkout?.startDate.toFormat('dd/MM/yyyy')
         const endDate = checkout?.endDate.toFormat('dd/MM/yyyy')
+        if (checkout == null) {
+            return view.render('page/peminjaman-barang/rekap-peminjaman', { 'error': 'Tidak ada barang yang sedang dipinjam' })
+        }
         return view.render('page/peminjaman-barang/rekap-peminjaman', { 'checkouts': checkout, 'noPinjam': noPinjam , 'startDate': startDate, 'endDate': endDate })
     }
 
-    public async sedangDipinjam({ view }: HttpContextContract) {
-        return view.render('page/pengembalian-barang/sedang-dipinjam')
+    public async sedangDipinjam({ view, auth, request }: HttpContextContract) {
+        const user_id = auth.user?.id ?? 0;
+        
+        let query = await Checkout
+        .query()
+        .where('userId', user_id)
+        .preload('tool');
+
+        if(request.input('search')){
+            const checkout = query.filter((item) => {
+                return item.tool.name.toLowerCase().includes(request.input('search').toLowerCase()) && (item.status == 'Dipinjam' || item.status == 'Belum Diambil')
+            })
+            if (checkout.length == 0) {
+                return view.render('page/pengembalian-barang/sedang-dipinjam', { 'error': 'Tidak ada barang yang sedang dipinjam' })
+            }
+            return view.render('page/pengembalian-barang/sedang-dipinjam', { 'checkouts': checkout })
+        }
+
+        const checkout = query.filter((item) => {
+            return item.status == 'Dipinjam' || item.status == 'Belum Diambil'
+        })
+        
+        if (checkout.length == 0) {
+            return view.render('page/pengembalian-barang/sedang-dipinjam', { 'error': 'Tidak ada barang yang sedang dipinjam' })
+        }
+        return view.render('page/pengembalian-barang/sedang-dipinjam', { 'checkouts': checkout })
     }
 
-    public async detailPeminjaman({ view }: HttpContextContract) {
-        return view.render('page/pengembalian-barang/detail-peminjaman')
+    public async detailPeminjaman({ view, params }: HttpContextContract) {
+        const checkout = await Checkout.findBy('id', params.checkout_id)
+        await checkout?.load('tool')
+        await checkout?.load('user')
+        let noPinjam = checkout?.createdAt.toFormat('dd/MM/yyyy')
+        noPinjam = checkout?.tool.name.toUpperCase().replace(/ /g, '_') + '/' + noPinjam + '/' + checkout?.id
+        const startDate = checkout?.startDate.toFormat('dd/MM/yyyy')
+        const endDate = checkout?.endDate.toFormat('dd/MM/yyyy')
+
+        if (checkout == null) {
+            return view.render('page/pengembalian-barang/detail-peminjaman', { 'error': 'Tidak ada barang yang sedang dipinjam' })
+        }
+        return view.render('page/pengembalian-barang/detail-peminjaman', { 'checkouts': checkout, 'noPinjam': noPinjam , 'startDate': startDate, 'endDate': endDate })
     }
 
-    public async riwayatPeminjaman({ view }: HttpContextContract) {
-        return view.render('page/riwayat-peminjaman/riwayat-peminjaman')
+    public async riwayatPeminjaman({ view, auth, request }: HttpContextContract) {
+        const user_id = auth.user?.id ?? 0;
+        // find checkout where status = 'Dipinjam' or 'Belum Diambil' with findBy
+        const query = await Checkout.query().where('userId', user_id).preload('tool').preload('user')
+        // search checkout with user input
+        if (request.input('search')) {
+            const checkout = query.filter((item) => {
+                return item.tool.name.toLowerCase().includes(request.input('search').toLowerCase()) && item.status == 'Dikembalikan'
+            })
+            if (checkout.length == 0) {
+                return view.render('page/riwayat-peminjaman/riwayat-peminjaman', { 'error': 'Tidak ada barang yang pernah dipinjam' })
+            }
+            return view.render('page/riwayat-peminjaman/riwayat-peminjaman', { 'checkouts': checkout })
+        }
+        // filter checkout where status = 'Dikembalikan'
+        const checkout = query.filter((item) => {
+            return item.status == 'Dikembalikan'
+        })
+        // change the format of the date
+        let endDate:Array<string> = []
+        for (let i = 0; i < checkout.length; i++) {
+            if (checkout[i].endDate == null) {
+                checkout[i].endDate = checkout[i].endDate
+            }
+            else{
+                endDate[i] = checkout[i].updatedAt.toFormat('dd/MM/yyyy')
+            }
+        }
+        
+        if (checkout.length == 0) {
+            return view.render('page/riwayat-peminjaman/riwayat-peminjaman', { 'error': 'Tidak ada barang yang pernah dipinjam' })
+        }
+
+        return view.render('page/riwayat-peminjaman/riwayat-peminjaman', { 'checkouts': checkout, 'endDate': endDate})
     }
     
     public async detailRiwayat({ view }: HttpContextContract) {
@@ -90,7 +160,12 @@ export default class PagesController {
     public async akun({ view, auth }: HttpContextContract) {
         const user = await User.findBy('id', auth.user?.id)
         await user?.load('role')
-        return view.render('page/account/akun', { 'users': user })
+        const checkout = await Checkout.query().where('status', 'Belum Diambil').preload('tool').preload('user')
+        const diterima = await Checkout.query().where('status', 'Dipinjam').preload('tool').preload('user')
+        const ditolak = await Checkout.query().where('status', 'Ditolak').preload('tool').preload('user')
+        const waiting = await Checkout.query().where('status', 'Menunggu Persetujuan').preload('tool').preload('user')
+
+        return view.render('page/account/akun', { 'users': user, 'checkouts': checkout, 'diterima': diterima, 'ditolak': ditolak, 'waiting': waiting })
     }
 
     public async addTool({ view }: HttpContextContract) {
@@ -98,4 +173,33 @@ export default class PagesController {
         return view.render('page/tool/add-tool', { 'categories': category })
     }
     
+    public async detailUbahStatus({ view, params }: HttpContextContract) {
+        const checkout = await Checkout.findBy('id', params.checkout_id)
+        await checkout?.load('tool')
+        await checkout?.load('user')
+        let noPinjam = checkout?.createdAt.toFormat('dd/MM/yyyy')
+        noPinjam = checkout?.tool.name.toUpperCase().replace(/ /g, '_') + '/' + noPinjam + '/' + checkout?.id
+        const startDate = checkout?.startDate.toFormat('dd/MM/yyyy')
+        const endDate = checkout?.endDate.toFormat('dd/MM/yyyy')
+
+        if (checkout == null) {
+            return view.render('page/peminjaman-barang/detail-ubah-status', { 'error': 'Tidak ada barang yang sedang dipinjam' })
+        }
+        return view.render('page/peminjaman-barang/detail-ubah-status', { 'checkouts': checkout, 'noPinjam': noPinjam , 'startDate': startDate, 'endDate': endDate })
+    }
+
+    public async konfirmasiPeminjaman({ view, params }: HttpContextContract) {
+        const checkout = await Checkout.findBy('id', params.checkout_id)
+        await checkout?.load('tool')
+        await checkout?.load('user')
+        let noPinjam = checkout?.createdAt.toFormat('dd/MM/yyyy')
+        noPinjam = checkout?.tool.name.toUpperCase().replace(/ /g, '_') + '/' + noPinjam + '/' + checkout?.id
+        const startDate = checkout?.startDate.toFormat('dd/MM/yyyy')
+        const endDate = checkout?.endDate.toFormat('dd/MM/yyyy')
+
+        if (checkout == null) {
+            return view.render('page/peminjaman-barang/detail-konfirmasi-peminjaman', { 'error': 'Tidak ada barang yang sedang dipinjam' })
+        }
+        return view.render('page/peminjaman-barang/detail-konfirmasi-peminjaman', { 'checkouts': checkout, 'noPinjam': noPinjam , 'startDate': startDate, 'endDate': endDate })
+    }
 }

@@ -35,9 +35,17 @@ Route.group(() => {
     Route.get('/rekap-peminjaman/:checkout_id', 'PagesController.rekapPeminjaman').as('rekap-peminjaman')
     Route.post('/checkouts/store/:tool_id', 'CheckoutsController.store').as('checkouts.store')
 
+    //ubah status peminjaman
+    Route.get('/detail-ubah-status/:checkout_id', 'PagesController.detailUbahStatus')
+    Route.get('/detail-konfirmasi-peminjaman/:checkout_id', 'PagesController.konfirmasiPeminjaman')
+    Route.post('/update-status/:checkout_id', 'CheckoutsController.updateStatusTerima').as('checkouts.update-status')
+    Route.post('/tolak-status/:checkout_id', 'CheckoutsController.updateStatusTolak').as('checkouts.tolak-status')
+    Route.post('/konfirmasi-peminjaman/:checkout_id', 'CheckoutsController.konfirmasiPeminjaman').as('checkouts.konfirmasi-peminjaman')
+
     //pengembalian barang
     Route.get('/sedang-dipinjam', 'PagesController.sedangDipinjam')
-    Route.get('/detail-peminjaman', 'PagesController.detailPeminjaman')
+    Route.get('/detail-peminjaman/:checkout_id', 'PagesController.detailPeminjaman')
+    Route.post('/checkouts/update/:checkout_id', 'CheckoutsController.update').as('checkouts.update')
 
     //riwayat peminjaman
     Route.get('/riwayat-peminjaman', 'PagesController.riwayatPeminjaman')

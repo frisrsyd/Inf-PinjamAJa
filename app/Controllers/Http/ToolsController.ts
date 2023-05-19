@@ -10,14 +10,16 @@ export default class ToolsController {
 
   public async store({request, response, session, auth}: HttpContextContract) {
     const tool = new Tool()
-    const data = request.body()
-
+    const data = request.only(['toolName', 'category', 'categoryText' ,'stock'])
+    if (data.categoryText != null) {
+      data.category = data.categoryText
+    }
     const toolName = data.toolName
-    const categoryName:string = data.category
+    const categoryName = data.category
     let categorySlug
     let slug
     if(toolName != null && categoryName != null){
-      categorySlug = categoryName.toLowerCase().replace(/ /g, '-')
+      categorySlug = data.category = data.category.toLowerCase().replace(/ /g, '-')
       slug = data.toolName = data.toolName.toLowerCase().replace(/ /g, '-')
     }
     let image = request.file('image')!
@@ -90,10 +92,7 @@ export default class ToolsController {
 
   public async edit({}: HttpContextContract) {}
 
-  public async update({params}: HttpContextContract) {
-    const tool = await Tool.findByOrFail('slug', params.slug)
-    const data = await tool.toJSON()
-    return data
+  public async update({}: HttpContextContract) {
   }
 
   public async destroy({}: HttpContextContract) {}

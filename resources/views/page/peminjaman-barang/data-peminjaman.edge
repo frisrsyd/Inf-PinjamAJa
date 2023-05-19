@@ -56,7 +56,7 @@
                         @form.inputTextarea({
                         name : 'Tujuan Peminjaman',
                         id : 'tujuanPeminjaman',
-                        placeholder: 'Maukkan tujuan peminjaman',
+                        placeholder: 'Masukkan tujuan peminjaman',
                         rows : '4'
                         })
                         @end
@@ -69,11 +69,24 @@
                         @end
                     </div>
                     <div class="row ps-3 pe-3">
-                        <button class="btn btn-primary shadow" type="submit">Pinjam</button>
+                        <button id="pinjamButton" disabled class="btn btn-primary shadow" type="submit">Pinjam</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </section>
+<script>
+    let submitButton = document.getElementById('pinjamButton');
+    let snk = document.getElementById('snk');
+
+    snk.addEventListener('change', function () {
+        if (this.checked) {
+            submitButton.disabled = false;
+        } else {
+            submitButton.disabled = true;
+        }
+    });
+
+</script>
 @endsection

@@ -1,5 +1,5 @@
 @layout('layouts/main')
-@set('title', 'Rekap Peminjaman')
+@set('title', 'Konfirmasi Peminjaman')
 
 @section('body')
 <section>
@@ -80,14 +80,25 @@
                     </div>
                 </div>
                 <div class="row">
-                    @button({
-                    type : 'submit',
-                    class_button : 'btn btn-primary',
-                    text : 'Kembali ke Home',
-                    href : '/home',
-                    id : 'pinjam-sekarang',
-                    })
-                    @end
+                    <div class="col-md-6">
+                        <p>Tujuan Peminjaman</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p>: {{checkouts?.purpose}}</p>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="col-md">
+                        <form action="{{route('checkouts.konfirmasi-peminjaman', {checkout_id: checkouts?.id})}}"
+                            method="POST">
+                            {{ csrfField() }}
+                            <div class="row ps-3 pe-3">
+                                <button onclick="alert('Anda yakin konfirmasi pinjaman?')"
+                                    class="btn btn-success shadow btnPersetujuan" type="submit">Konfirmasi
+                                    Peminjaman</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

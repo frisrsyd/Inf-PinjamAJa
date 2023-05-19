@@ -9,24 +9,38 @@
             @end
         </div>
         <div class="row">
+            @if(error)
             @subtitle({
-                subtitle: 'Barang yang sedang dipinjam'
+            subtitle: error,
             })
             @end
+            @endif
+
+            {{-- if errror = false set subtitle barang tersedia --}}
+            @if(!error)
+            @subtitle({
+            subtitle: 'Barang yang sedang dipinjam',
+            })
+            @end
+            @endif
         </div>
 
-        @card.cardLarge({
-            nama_barang: 'Kamera Canon EOS 800D',
+        <div class="row">
+            @each(checkout in checkouts)
+            @card.cardLarge({
+            nama_barang: checkout?.tool.name,
             label_1: 'Jumlah Pinjam:',
             label_2: 'Status:',
-            text_1: '1',
-            text_2: 'Belum Diambil',
-            class_text_2: 'text-danger',
+            text_1: checkout?.quantity,
+            text_2: checkout?.status,
+            class_text_2: checkout?.status != 'Dipinjam' ? 'text-danger' : 'text-success',
             text_button: 'Details',
-            href: '/detail-peminjaman',
-            image : 'http://localhost:8080/assets/images/camera.98c54927.jpg'
-        })
-        @end
+            href: '/detail-peminjaman/'+ checkout?.id,
+            image : 'http://localhost:8080/assets/images' + checkout?.tool.image.url
+            })
+            @end
+            @endeach
+        </div>
     </div>
 </section>
 @endsection

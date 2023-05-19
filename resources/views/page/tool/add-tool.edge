@@ -26,13 +26,13 @@
                         <select id="category" name="category" class="form-select form-control " required>
                             <option selected>Pilih jenis alat</option>
                             @each(item in categories)
-                            <option value="{{item.slug}}">{{item.name}}</option>
+                            <option value="{{item.name}}">{{item.name}}</option>
                             @endeach
                             <option value="">Lainnya...</option>
                         </select>
                     </div>
                     <div class="mb-3">
-                        <input id="categoryText" name="category" type="text" class="form-control"
+                        <input id="categoryText" name="categoryText" type="text" class="form-control"
                             placeholder="Jenis alat" style="display: none">
                     </div>
                     <div class=" mb-3 form-control col">
@@ -61,7 +61,6 @@
             toolNameText.style.display = 'block';
             toolNameText.required = true;
             toolName.required = false;
-            toolName.value = toolNameText.value;
         } else{
             toolNameText.style.display = 'none';
             toolNameText.required = false;

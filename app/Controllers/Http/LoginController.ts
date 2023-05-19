@@ -6,26 +6,26 @@ export default class LoginController {
     public async login({request, response, auth, session}: HttpContextContract){
         const data = request.only(['npm', 'password'])
     
-        // Lookup user manually
-        const user = await User.query()
-        .where('npm', data.npm)
-        .firstOrFail()
-    
-
-        // Verify password
-        if (!(await Hash.verify(user.password, data.password))) {
-            session.flash('status', 'npm atau Password salah')
-        }
-
-        // Create session
-        const login = await auth.use('web').login(user)
-        if (login) {
-            session.flash('status', 'Login berhasil')
-            return response.redirect('/home')
-        }
-        else {
-            session.flash('status', 'Login gagal')
-            return response.redirect('/login')
+        try {
+            // Lookup user manually
+            const user = await User.query()
+              .where('npm', data.npm)
+              .firstOrFail();
+        
+            // Verify password
+            const passwordVerified = await Hash.verify(user.password, data.password);
+            if (!passwordVerified) {
+              session.flash('status', 'Invalid npm or password');
+              return response.redirect('/login');
+            }
+        
+            // Create session
+            await auth.use('web').login(user);
+            session.flash('status', 'Login berhasil');
+            return response.redirect('/home');
+        } catch (error) {
+            session.flash('status', 'Invalid npm or password');
+            return response.redirect('/login');
         }
     }
 
